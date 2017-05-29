@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include <iomanip>
+#include <stdlib.h>
 
 
 using namespace std;
@@ -148,3 +149,99 @@ int mapchek2(string str) {
 }
 
 /**********************************************************Syntactical analyzer**********************************************************************************/
+
+ifstream syn("result.txt");
+ofstream syn_res("result2.txt");
+int error;
+bool flag = true;
+
+void numb() {
+	char ch;
+	string buf;
+	syn.get(ch);
+	int i = 0;
+
+	while(!syn.eof()){
+		while (ch == ' ') {
+			syn.get(ch);
+		}
+		while (ch != ' ') {
+			buf = buf + ch;
+			syn.get(ch);
+		}
+		do {
+			syn.get(ch);
+
+		} while (ch != '\n');
+		syn.get(ch);
+		num[i] = buf;
+		i++;
+		buf.clear();
+	}
+}
+
+string num_chek(int number) {
+	string res;
+	while (number < 100) {
+		if (number == int(';')) {
+			syn_res << '\t' << '\t' << '\t' << ';' << endl;
+		}
+		else if (number == int('.')) {
+			syn_res << '\t' << '\t' << '\t' << '.' << endl;
+		}
+		else if (number == int('=')) {
+			syn_res << '\t' << '\t' << '\t' << '=' << endl;
+		}
+		i_num++;
+		number = atoi(num[i_num].c_str());
+	}
+	if (number > 400 && number < 500) {
+		auto i = KeyWord.begin();
+		for (i;i != KeyWord.end();i++) {
+			if (number == i->first) {
+				res = KeyWord[i->first];
+				break;
+			}
+		}
+	}
+	else if (number > 500 && number < 600) {
+		auto i = Identifiers.begin();
+		for (i;i != Identifiers.end();i++) {
+			if (number == i->first) {
+				res = Identifiers[i->first];
+				break;
+			}
+		}
+	}
+	else if (number > 600 ) {
+		auto i = Constants.begin();
+		for (i;i != Constants.end();i++) {
+			if (number == i->first) {
+				res = Constants[i->first];
+				break;
+			}
+		}
+	}
+	return res;
+}
+
+void ident() {
+	int j;
+	string word;
+	j = atoi(num[i_num].c_str());
+	i_num++;
+	word = num_chek(j);
+	auto i = Identifiers.begin();
+	for (i; i!=Identifiers.end(); i++) {
+		if (word == Identifiers[i->first]) {
+			syn_res << '\t' << '\t' << "<identifier>" << endl << '\t' << '\t' << '\t' << word << endl;
+			break;
+		}
+		else {
+			if (i == Identifiers.end()) {
+				flag = false;
+				error = 1;
+			}
+		}
+	}
+}
