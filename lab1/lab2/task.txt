@@ -1,0 +1,10 @@
+PROGRAM Prog;
+(*dm
+s**n
+k*)
+CONST a1=5#-2;
+CONST b=10;
+CONST c52=7#3;
+CONST d=8#+4;
+BEGIN
+END.
