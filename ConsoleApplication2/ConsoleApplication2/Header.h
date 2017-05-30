@@ -28,7 +28,7 @@ char number[13] = {'0','1','2','3','4','5','6','7','8','9','#', '+', '-' };
 
 char sep[4] = { ';', ',', '=','.' };
 
-/*--------------------Lexical analyzer-------------------*/
+/*---------------------------------------------------------------------Lexical analyzer--------------------------------------------------*/
 
 bool chek1(char ch) {
 	bool f = false;
@@ -148,11 +148,12 @@ int mapchek2(string str) {
 	return result;
 }
 
-/*--------------------Syntactical analyzer-------------------*/
+/*---------------------------------------------------------Syntactical analyzer---------------------------------------------------*/
 string num[100];
 int i_num;
 bool flag = true;
 int error;
+int tab_count = 0;
 ifstream syn("result.txt");
 ofstream syn_result("result2.txt");
 
@@ -180,17 +181,27 @@ void numb() {
 	}
 }
 
+void tab(int count) {
+	for (int i = 0;i <= count;i++) {
+		syn_result << '\t';
+	}
+}
+
 string num_chek(int number) {
 	string res;
 	while (number < 100) {
 		if (number == int(';')) {
-			syn_result << '\t' << '\t' << '\t' << ';' << endl;
+			tab_count--;
+			tab(tab_count);
+			syn_result << ';' << endl;
 		}
 		else if (number == int('.')) {
-			syn_result << '\t' << '\t' << '\t' << '.' << endl;
+			tab(tab_count);
+			syn_result << '.' << endl;
 		}
 		else if (number == int('=')) {
-			syn_result << '\t' << '\t' << '\t' << '=' << endl;
+			tab(tab_count);
+			syn_result << '=' << endl;
 		}
 		i_num++;
 		number = atoi(num[i_num].c_str());
@@ -278,11 +289,16 @@ void ident() {
 	string word;
 	j = atoi(num[i_num].c_str());
 	i_num++;
+	tab_count++;
 	word = num_chek(j);
 	auto i = Identifiers.begin();
 	for (i; i != Identifiers.end(); i++) {
 		if (word == Identifiers[i->first]) {
-			syn_result << '\t' << '\t' << '\t' << "<identifier>" << endl << '\t' << '\t' << '\t' << '\t' << word << endl;
+			tab(tab_count);
+			syn_result << "<identifier>" << endl;
+			tab_count++;
+			tab(tab_count);
+			syn_result << word << endl;
 			break;
 		}
 		else {
@@ -297,9 +313,14 @@ void ident() {
 
 void cons_ident(string word) {
 	auto i = Identifiers.begin();
+	tab_count++;
 	for (i; i != Identifiers.end(); i++) {
 		if (word == Identifiers[i->first]) {
-			syn_result << '\t' << '\t' << '\t' << '\t' << '\t' << "<constant-identifier>" << endl << '\t' << '\t'<< '\t' << '\t' << '\t' << '\t' << '\t' << word << endl;
+			tab(tab_count);
+			syn_result << "<constant-identifier>" << endl ;
+			tab_count++;
+			tab(tab_count);
+			syn_result << word << endl;
 			break;
 		}
 		else{
@@ -317,7 +338,8 @@ void proc_ident() {
 	string word;
 	j = atoi(num[i_num].c_str());
 	word = num_chek(j);
-	syn_result << '\t' <<  "<procedure-identifiers>" << endl;
+	tab(tab_count);
+	syn_result <<  "<procedure-identifiers>" << endl;
 	ident();
 }
 
@@ -327,11 +349,16 @@ void cons() {
 	string word;
 	auto i = Constants.begin();
 	i_num++;
+	tab_count--;
 	j = atoi(num[i_num].c_str());
 	word = num_chek(j);
 	for (i = Constants.begin(); i != Constants.end(); i++) {
 		if (word == Constants[i->first]) {
-			syn_result << '\t' << '\t' << '\t' << '\t' << "<constant>" << endl << '\t' << '\t' << '\t' << '\t' << '\t' << word << endl;
+			tab(tab_count);
+			syn_result << "<constant>" << endl ;
+			tab_count++;
+			tab(tab_count);
+			syn_result << word << endl;
 			break;
 		}
 		else{
@@ -349,10 +376,14 @@ void cons_decl() {
 	auto i = Identifiers.begin();
 	j = atoi(num[i_num].c_str());
 	word = num_chek(j);
-
+	tab_count--;
 	for (i = Identifiers.begin(); i != Identifiers.end(); i++) {
 		if (word == Identifiers[i->first]) {
-			syn_result << '\t' << '\t' << '\t' << "<constant-declarations-list>" << endl << '\t' << '\t' << '\t' << '\t' << "<constant-declaration>" << endl;
+			tab(tab_count);
+			syn_result << "<constant-declarations-list>" << endl ;
+			tab_count++;
+			tab(tab_count);
+			syn_result << "<constant-declaration>" << endl;
 			cons_ident(word);
 			if (flag == true) {
 				cons();
@@ -362,6 +393,7 @@ void cons_decl() {
 					word = num_chek(j);
 				}
 			}
+			tab_count -= 2;
 		}
 	}
 }
@@ -372,9 +404,14 @@ string cons_decls() {
 	auto i = Identifiers.begin();
 	j = atoi(num[i_num].c_str());
 	i_num++;
+	tab_count++;
 	word = num_chek(j);
 	if (word == "CONST") {
-		syn_result << '\t' << '\t' << "<constant-declarations>" << endl << '\t' << '\t' << '\t' << word << endl;
+		tab(tab_count);
+		syn_result << "<constant-declarations>" << endl;
+		tab_count++;
+		tab(tab_count);
+		syn_result << word << endl;
 		j = atoi(num[i_num].c_str());
 		word = num_chek(j);
 			for (i = Identifiers.begin(); i != Identifiers.end(); i++) {
@@ -395,14 +432,18 @@ string cons_decls() {
 
 string decl() {
 	string word;
-	syn_result << '\t' << "<declarations>" << endl;
+	tab(tab_count);
+	syn_result << "<declarations>" << endl;
 	word = cons_decls();
 	return word;
 }
 
 void stat_list() {
 	/*EMPTY*/
-	syn_result << '\t' << '\t' << "<statements-list>" << endl;
+	tab_count++;
+	tab(tab_count);
+	syn_result << "<statements-list>" << endl;
+	tab_count--;
 }
 
 void block() {
@@ -411,16 +452,22 @@ void block() {
 	j = atoi(num[i_num].c_str());
 	word = num_chek(j);
 	syn_result << "<block>" << endl;
+	tab_count = 1;
 	word = decl();
 	if (flag == true) {
 		if (word == "BEGIN") {
-			syn_result << '\t' << word << endl;
+			tab_count = 0;
+			tab(tab_count);
+			syn_result << word << endl;
 			stat_list();
 			i_num++;
 			j = atoi(num[i_num].c_str());
 			word = num_chek(j);
 			if (word == "END") {
-				syn_result << '\t' << word << endl << '\t' << '.' << endl;
+				tab(tab_count);
+				syn_result << word << endl;
+				tab(tab_count);
+				syn_result << '.' << endl;
 			}
 			else {
 				flag = false;
@@ -443,7 +490,9 @@ void program() {
 	i_num++;
 	word = num_chek(j);
 	if (word == "PROGRAM") {
-		syn_result << "<program>" << endl << '\t' << word << endl;
+		syn_result << "<program>" << endl;
+		tab(tab_count);
+		syn_result << word << endl;
 		proc_ident();
 		if (flag == true) {
 			block();

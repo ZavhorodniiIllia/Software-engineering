@@ -1,45 +1,45 @@
 <program>
 	PROGRAM
 	<procedure-identifiers>
-			<identifier>
-				Prog
-			;
+		<identifier>
+			Prog
+		;
 <block>
-	<declarations>
-		<constant-declarations>
-			CONST
+		<declarations>
+			<constant-declarations>
+				CONST
 			<constant-declarations-list>
 				<constant-declaration>
 					<constant-identifier>
-							a2
-			=
-				<constant>
-					5#-3
-			;
+						a2
+					=
+					<constant>
+						5#-3
+					;
 			<constant-declarations-list>
 				<constant-declaration>
 					<constant-identifier>
-							b
-			=
-				<constant>
-					10
-			;
+						b
+					=
+					<constant>
+						10
+					;
 			<constant-declarations-list>
 				<constant-declaration>
 					<constant-identifier>
-							c52
-			=
-				<constant>
-					7#3
-			;
+						c52
+					=
+					<constant>
+						7#3
+					;
 			<constant-declarations-list>
 				<constant-declaration>
 					<constant-identifier>
-							d
-			=
-				<constant>
-					-8#+4
-			;
+						d
+					=
+					<constant>
+						-8#+4
+					;
 	BEGIN
 		<statements-list>
 	END
