@@ -154,6 +154,8 @@ ifstream syn("result.txt");
 ofstream syn_res("result2.txt");
 int error;
 bool flag = true;
+int i_num = 0;
+string num[100];
 
 void numb() {
 	char ch;
