@@ -103,7 +103,89 @@ int main() {
 
 	/*---------------------------------------------------------Code generator---------------------------------------------------*/
 
+	ifstream code("result2.txt");
+	ofstream code_res("result3.txt");
+	code.get(ch);
+	string buf1 = "";
+	buf = "";
 
+	while (!file.eof()) {
+		if (ch == '\t') {
+			while (ch == '\t') {
+				code.get(ch);
+			}
+		}
+		if (ch == '<') {
+			while (ch != '>') {
+				code.get(ch);
+				buf1 = buf1 + ch;
+			}
+		}
+		else {
+			switch (letter(ch)) {
+			case 1: {
+				while (ch != '\n') {
+					buf = buf + ch;
+					code.get(ch);
+					break;
+				}
+			}
+			case 2: {
+				while (ch != '\n') {
+					buf = buf + ch;
+					code.get(ch);
+					break;
+				}
+			}
+			case 3: {
+				code.get(ch);
+			}
+			default: {
+				break;
+			}
+			}
+		}
+		if (ch == '\n') {
+			code.get(ch);
+		}
+		if (buf == "PROGRAM") {
+			code_res << ':';
+		}
+		else if (buf == "CONST") {
+		
+		}
+		else if (buf == "LABLE") {
+			
+		}
+		else if (buf == "BEGIN") {
+			code_res << "data ends" << endl;
+			code_res << "code segment" << endl;
+			code_res << "assume cs:code ds:dats" << endl;
+			code_res << "org 100h" << endl;
+			code_res << "begin:" << endl;
+		}
+		else if (buf == "END") {
+			code_res << "code ends" << endl;
+			code_res << "end begin" << endl;
+		}
+		else {
+			if (buf1 == "identifier") {
+				code_res << buf << ".asm" << endl;
+				code_res << "data segment" << endl;
+			}
+			else if (buf1 == "constant-identifier") {
+				code_res << buf;
+			}
+			else if (buf1 == "constant") {
+			
+			}
+			else if (buf1 == "lable") {
+				code_res << buf;
+			}
+		}
+		buf.clear();
+		buf1.clear();
+	}
 
 	system("pause");
 }
