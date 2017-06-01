@@ -108,48 +108,52 @@ int main() {
 	code.get(ch);
 	string buf1 = "";
 	buf = "";
+	bool falg = false;
 
-	while (!file.eof()) {
+	while (!code.eof()) {
 		if (ch == '\t') {
 			while (ch == '\t') {
 				code.get(ch);
 			}
 		}
 		if (ch == '<') {
+			buf1.clear();
+			code.get(ch);
 			while (ch != '>') {
-				code.get(ch);
 				buf1 = buf1 + ch;
-			}
-		}
-		else {
-			switch (letter(ch)) {
-			case 1: {
-				while (ch != '\n') {
-					buf = buf + ch;
-					code.get(ch);
-					break;
-				}
-			}
-			case 2: {
-				while (ch != '\n') {
-					buf = buf + ch;
-					code.get(ch);
-					break;
-				}
-			}
-			case 3: {
 				code.get(ch);
 			}
-			default: {
-				break;
+			code.get(ch);
+		}
+		switch (letter(ch)) {
+		case 1: {
+			while (ch != '\n') {
+				buf = buf + ch;
+				code.get(ch);
 			}
+			falg = true;
+			break;
+		}
+		case 2: {
+			while (ch != '\n') {
+				buf = buf + ch;
+				code.get(ch);
 			}
+			falg = true;
+			break;
+		}
+		case 3: {
+			code.get(ch);
+		}
+		default: {
+			break;
+		}
 		}
 		if (ch == '\n') {
 			code.get(ch);
 		}
 		if (buf == "PROGRAM") {
-			code_res << ':';
+			code_res << ';';
 		}
 		else if (buf == "CONST") {
 		
@@ -169,22 +173,28 @@ int main() {
 			code_res << "end begin" << endl;
 		}
 		else {
-			if (buf1 == "identifier") {
-				code_res << buf << ".asm" << endl;
-				code_res << "data segment" << endl;
-			}
-			else if (buf1 == "constant-identifier") {
-				code_res << buf;
-			}
-			else if (buf1 == "constant") {
-			
-			}
-			else if (buf1 == "lable") {
-				code_res << buf;
+			if (falg == true) {
+				if (buf1 == "identifier") {
+					code_res << buf << ".asm" << endl;
+					code_res << "data segment" << endl;
+					buf1.clear();
+				}
+				else if (buf1 == "constant-identifier") {
+					code_res << buf << "	dd	";
+					buf1.clear();
+				}
+				else if (buf1 == "constant") {
+					code_res << buf << endl;
+					buf1.clear();
+				}
+				else if (buf1 == "lable") {
+					code_res << buf;
+					buf1.clear();
+				}
 			}
 		}
 		buf.clear();
-		buf1.clear();
+		falg = false;
 	}
 
 	system("pause");

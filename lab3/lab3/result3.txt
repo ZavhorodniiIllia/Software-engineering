@@ -1,0 +1,13 @@
+;Prog.asm
+data segment
+a1	dd	5#-3
+b	dd	10
+c52	dd	7#3
+d	dd	-8#+4
+data ends
+code segment
+assume cs:code ds:dats
+org 100h
+begin:
+code ends
+end begin
