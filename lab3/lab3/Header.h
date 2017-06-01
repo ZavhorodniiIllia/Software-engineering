@@ -614,4 +614,32 @@ void program() {
 
 /*---------------------------------------------------------Code generator---------------------------------------------------*/
 
+double assm(string buf) {
+	double ret;
+	string buf1="";
+	int k=buf.length();
+	int x, y;
+	for (int i = 0;i <= k;i++) {
+		if (buf[i] == '#') {
+			i = 0;
+			while (buf[i] != '#') {
+				buf1 += buf[i];
+				i++;
+			}
+			x = atoi(buf1.c_str());
+			buf1.clear();
+			while (i < k) {
+				i++;
+				buf1 += buf[i];
+			}
+			y = atoi(buf1.c_str());
+			ret = pow(x, y);
+			break;
+		}
+		else if (i == k) {
+			ret = atoi(buf.c_str());
+		}
+	}
+	return ret;
+}
 

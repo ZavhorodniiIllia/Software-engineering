@@ -180,11 +180,11 @@ int main() {
 					buf1.clear();
 				}
 				else if (buf1 == "constant-identifier") {
-					code_res << buf << "	dd	";
+					code_res << buf << "	equ	";
 					buf1.clear();
 				}
 				else if (buf1 == "constant") {
-					code_res << buf << endl;
+					code_res << assm(buf) << endl;
 					buf1.clear();
 				}
 				else if (buf1 == "lable") {

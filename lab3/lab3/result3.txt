@@ -1,9 +1,9 @@
 ;Prog.asm
 data segment
-a1	dd	5#-3
-b	dd	10
-c52	dd	7#3
-d	dd	-8#+4
+a1	equ	0.008
+b	equ	10
+c52	equ	343
+d	equ	4096
 data ends
 code segment
 assume cs:code ds:dats
