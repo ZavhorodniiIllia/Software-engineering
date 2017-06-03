@@ -613,6 +613,9 @@ void program() {
 }
 
 /*---------------------------------------------------------Code generator---------------------------------------------------*/
+string prog_name[10];
+int name_count = 0;
+char name;
 
 double assm(string buf) {
 	double ret;
@@ -641,5 +644,32 @@ double assm(string buf) {
 		}
 	}
 	return ret;
+}
+
+bool name_chek(string buf) {
+	bool flag = true;
+	while (true) {
+		for (int i = 0; i <= 13; i++) {
+			if (buf[0] == number[i]) {
+				flag = false;
+				break;
+			}
+		}
+		if (flag == false) {
+			break;
+		}
+		for (int i = 0; i <= 10; i++) {
+			if (buf == prog_name[i]) {
+				flag = false;
+			}
+		}
+		if (flag == false) {
+			break;
+		}
+		prog_name[0] = buf;
+		break;
+	}
+	name_count++;
+	return flag;
 }
 

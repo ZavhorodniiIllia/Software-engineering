@@ -29,7 +29,7 @@ int main() {
 							if (ch == '\n')
 								++row;
 						}
-						else if (letter(ch) == 9) {
+						else if (letter(ch) == 9 || letter (ch)==2) {
 							f = true;
 							break;
 						}
@@ -87,7 +87,7 @@ int main() {
 		}
 		}
 		if (f == true) {
-			cout << "Error" << endl;
+			result << "Error" << endl;
 			break;
 		}
 		buf.clear();
@@ -96,106 +96,122 @@ int main() {
 	}
 	file.close();
 	result.close();
+	if (f == false) {
+		/*--------------------------------------------------------Syntactical analyzer-------------------------------------------------------*/
+		numb();
+		program();
 
-	/*--------------------------------------------------------Syntactical analyzer-------------------------------------------------------*/
-	numb();
-	program();
+		/*---------------------------------------------------------Code generator---------------------------------------------------*/
 
-	/*---------------------------------------------------------Code generator---------------------------------------------------*/
+		ifstream code("result2.txt");
+		ofstream code_res("result3.txt");
+		code.get(ch);
+		string buf1 = "";
+		buf = "";
+		bool falg = false;
+		bool flag = true;
 
-	ifstream code("result2.txt");
-	ofstream code_res("result3.txt");
-	code.get(ch);
-	string buf1 = "";
-	buf = "";
-	bool falg = false;
-
-	while (!code.eof()) {
-		if (ch == '\t') {
-			while (ch == '\t') {
-				code.get(ch);
-			}
-		}
-		if (ch == '<') {
-			buf1.clear();
-			code.get(ch);
-			while (ch != '>') {
-				buf1 = buf1 + ch;
-				code.get(ch);
-			}
-			code.get(ch);
-		}
-		switch (letter(ch)) {
-		case 1: {
-			while (ch != '\n') {
-				buf = buf + ch;
-				code.get(ch);
-			}
-			falg = true;
-			break;
-		}
-		case 2: {
-			while (ch != '\n') {
-				buf = buf + ch;
-				code.get(ch);
-			}
-			falg = true;
-			break;
-		}
-		case 3: {
-			code.get(ch);
-		}
-		default: {
-			break;
-		}
-		}
-		if (ch == '\n') {
-			code.get(ch);
-		}
-		if (buf == "PROGRAM") {
-			code_res << ';';
-		}
-		else if (buf == "CONST") {
-		
-		}
-		else if (buf == "LABLE") {
-			
-		}
-		else if (buf == "BEGIN") {
-			code_res << "data ends" << endl;
-			code_res << "code segment" << endl;
-			code_res << "assume cs:code ds:dats" << endl;
-			code_res << "org 100h" << endl;
-			code_res << "begin:" << endl;
-		}
-		else if (buf == "END") {
-			code_res << "code ends" << endl;
-			code_res << "end begin" << endl;
-		}
-		else {
-			if (falg == true) {
-				if (buf1 == "identifier") {
-					code_res << buf << ".asm" << endl;
-					code_res << "data segment" << endl;
-					buf1.clear();
-				}
-				else if (buf1 == "constant-identifier") {
-					code_res << buf << "	equ	";
-					buf1.clear();
-				}
-				else if (buf1 == "constant") {
-					code_res << assm(buf) << endl;
-					buf1.clear();
-				}
-				else if (buf1 == "lable") {
-					code_res << buf;
-					buf1.clear();
+		while (!code.eof()) {
+			if (ch == '\t') {
+				while (ch == '\t') {
+					code.get(ch);
 				}
 			}
+			if (ch == '<') {
+				buf1.clear();
+				code.get(ch);
+				while (ch != '>') {
+					buf1 = buf1 + ch;
+					code.get(ch);
+				}
+				code.get(ch);
+			}
+			switch (letter(ch)) {
+			case 1: {
+				while (ch != '\n') {
+					buf = buf + ch;
+					code.get(ch);
+				}
+				falg = true;
+				break;
+			}
+			case 2: {
+				while (ch != '\n') {
+					buf = buf + ch;
+					code.get(ch);
+				}
+				falg = true;
+				break;
+			}
+			case 3: {
+				code.get(ch);
+			}
+			default: {
+				break;
+			}
+			}
+			if (ch == '\n') {
+				code.get(ch);
+			}
+			if (buf == "PROGRAM") {
+				code_res << ';';
+			}
+			else if (buf == "CONST") {
+
+			}
+			else if (buf == "LABLE") {
+
+			}
+			else if (buf == "BEGIN") {
+				code_res << "data ends" << endl;
+				code_res << "code segment" << endl;
+				code_res << "assume cs:code ds:dats" << endl;
+				code_res << "org 100h" << endl;
+				code_res << "begin:" << endl;
+			}
+			else if (buf == "END") {
+				code_res << "code ends" << endl;
+				code_res << "end begin" << endl;
+			}
+			else {
+				if (falg == true) {
+					if (buf1 == "identifier") {
+						flag = name_chek(buf);
+						if (flag == true) {
+							code_res << buf << ".asm" << endl;
+							code_res << "data segment" << endl;
+							buf1.clear();
+						}
+						else {
+							syn_result << "Program identifier name ERROR" << endl;
+						}
+					}
+					else if (buf1 == "constant-identifier") {
+						flag = name_chek(buf);
+						if (flag == true) {
+							code_res << buf << "	equ	";
+							buf1.clear();
+						}
+						else {
+							code_res << "Constant identifier name ERROR" << endl;
+						}
+					}
+					else if (buf1 == "constant") {
+						code_res << assm(buf) << endl;
+						buf1.clear();
+					}
+					else if (buf1 == "lable") {
+						code_res << buf;
+						buf1.clear();
+					}
+				}
+			}
+			if (flag == false) {
+				break;
+			}
+			buf.clear();
+			falg = false;
 		}
-		buf.clear();
-		falg = false;
 	}
-
 	system("pause");
 }
