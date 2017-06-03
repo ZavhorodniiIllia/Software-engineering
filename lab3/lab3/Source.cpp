@@ -10,7 +10,8 @@ int main() {
 	ofstream result("result.txt");
 	file.get(ch);
 	int row = 1;
-	int collumn = 1;
+	int collumn = 0;
+	int error = 0;
 
 	/*----------------------------------------------------------------Lexical analyzer-------------------------------------------------*/
 
@@ -18,6 +19,7 @@ int main() {
 		switch (letter(ch)) {
 		case 0: {
 					file.get(ch);
+					collumn++;
 					break;
 		}
 		case 1: {
@@ -25,12 +27,13 @@ int main() {
 						if (letter(ch) == 1) {
 							buf = buf + ch;
 							file.get(ch);
-							++collumn;
+							collumn++;
 							if (ch == '\n')
 								++row;
 						}
-						else if (letter(ch) == 9 || letter (ch)==2) {
+						else if (letter(ch) == 9 || letter(ch) == 2) {
 							f = true;
+							error = 0;
 							break;
 						}
 					}
@@ -44,11 +47,12 @@ int main() {
 						if (letter(ch) == 1 || letter(ch) == 2){
 							buf = buf + ch;
 							file.get(ch);
-							++collumn;
+							collumn++;
 							if (ch == '\n')
 								++row;
 						}
 						else if (letter(ch) == 9) {
+							error = 1;
 							f = true;
 							break;
 						}
@@ -59,9 +63,9 @@ int main() {
 					break;
 		}
 		case 3: {
+					collumn++;
 					result << setw(10) << int(ch) << setw(10) << row << setw(10) << collumn << setw(10) << ch << endl;
 					file.get(ch);
-					++collumn;
 					if (ch == '\n')
 						++row;
 					break;
@@ -76,26 +80,53 @@ int main() {
 							file.get(ch);
 						} while (ch != ')');
 					}
-					else
+					else {
+						error = 2;
 						f = true;
+					}
 					file.get(ch);
 					break;
 		}
 		default: {
-					 f = true;
-					 break;
+			error = 3;
+			f = true;
+			break;
 		}
 		}
 		if (f == true) {
-			result << "Error" << endl;
+			result << "ERROR:";
+			switch (error){
+			case 0: {
+				result << "inncorrect constant" << endl;
+				break;
+			}
+			case 1: {
+				result << "inncorrect identyfier" << endl;
+				break;
+			}
+			case 2: {
+				result << "inncorrect comment" << endl;
+				break;
+			}
+			case 3: {
+				result << "i dk wtf are u doing mate" << endl;
+				break;
+			}
+			default:
+				break;
+			}
 			break;
 		}
+		if (ch == '\n') {
+			collumn = 0;
+			file.get(ch);
+		}
 		buf.clear();
-		if (ch == '\n')
-			file.get(ch);;
 	}
+
 	file.close();
 	result.close();
+
 	if (f == false) {
 		/*--------------------------------------------------------Syntactical analyzer-------------------------------------------------------*/
 		numb();
